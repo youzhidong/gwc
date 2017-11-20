@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .box{
+            width:900px;
+            margin:50px auto;
+        }
+        .box ul.title{
+            background: #f4f4f4;
+        }
+        .box ul.content{
+            border-bottom: 1px dashed #ccc;
+        }
+        .box ul{
+            overflow: hidden;
+            text-align: center;
+        }
+        .box ul li{
+            float: left;
+            height:60px;
+            line-height: 60px;
+            width:16.666666666666%;
+        }
+        .box ul .ctr{
+            height:20px;
+            line-height: 20px;
+        }
+        .box ul .ctr *{
+            float: left;
+        }
+        .box ul .ctr input:nth-child(2){
+            width:30px;
+            margin: 0px 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <ul>
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="exampleInputName2">商品名称</label>
+                    <input type="text" class="form-control seller" placeholder="商品名称">
+                </div>
+                <div class="form-group">
+                    <label>单价</label>
+                    <input type="number" class="form-control price" placeholder="单价">
+                </div>
+                <div class="form-group">
+                    <label>数量</label>
+                    <input type="number" class="form-control num" placeholder="数量">
+                </div>
+                <button type="submit" class="btn btn-success">加入购物车</button>
+            </form>
+        </ul>
+        <br><br>
+        <ul class="title">
+            <li>
+                <input type="checkbox">
+                <span>全选</span>
+            </li>
+            <li>
+                <span>商品信息</span>
+            </li>
+            <li>
+                <span>单价</span>
+            </li>
+            <li>
+                <span>数量</span>
+            </li>
+            <li>
+                <span>金额</span>
+            </li>
+            <li>
+                <span>操作</span>
+            </li>
+        </ul>
+        <div class="content-baba">
+            <ul class="content">
+                <li>
+                    <input type="checkbox">
+                </li>
+                <li>
+                    化装品1
+                </li>
+                <li>
+                    55
+                </li>
+                <li class="ctr">
+                    <div style="margin-left: 39px;margin-top: 9px;">
+                        <input type="button" class="jj" value="&nbsp;+&nbsp;">
+                        <input type="text" value="1">
+                        <input type="button" class="jj" value="&nbsp;-&nbsp;">
+                    </div>
+                </li>
+                <li>
+                    55
+                </li>
+                <li>
+                    <span>删除</span>
+                </li>
+            </ul>
+
+        </div>
+        <h1 style="float: right; margin: 20px;">总计：￥112元</h1>
+    </div>
+</body>
+</html>
+
+<script>
+
+    var cart =JSON.parse(localStorage.getItem("gg")) || [];
+
+    localStorage.setItem("gg",JSON.stringify(cart));
+
+    function addCart(){
+        this.updata=document.querySelector(".form-inline");
+        this.seller=this.updata.querySelector(".seller"); //商品名称
+        this.price=this.updata.querySelector(".price"); //价格
+        this.num=this.updata.querySelector(".num"); // 数量
+        this.updataBtn=this.updata.querySelector(".btn.btn-success"); // 数量
+    };
+
+    addCart.prototype={
+        //初始化
+        init:function(){
+
+        },
+        //加入购物车
+        addSeller:function(){
+            var that=this;
+            this.updataBtn.onclick=function(ev){
+                ev.preventDefault(); //阻止默认事件
+                var obj={};
+
+                obj.name=that.seller.value;
+                obj.price=that.price.value;
+                obj.num=that.num.value;
+
+                cart.push(obj);
+                localStorage.setItem("gg",JSON.stringify(cart));
+            }
+        },
+        //绑定事件
+        bindEvent:function () {
+            this.init();
+           this.addSeller();
+        }
+    };
+
+    var obj=new addCart();
+    obj.bindEvent();
+    console.log(obj)
+
+
+    /*var data=[
+        {name:"化装品1",price:55,number:1,num:55}
+    ];*/
+
+    //1.先获取数据
+    //2.生成html
+
+    //加入购物车
+    //1.保存数据
+    //2.生成html
+</script>

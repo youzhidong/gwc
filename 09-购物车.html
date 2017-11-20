@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .box{
+            width:900px;
+            margin:50px auto;
+        }
+        .box ul.title{
+            background: #f4f4f4;
+        }
+        .box ul.content{
+            border-bottom: 1px dashed #ccc;
+        }
+        .box ul{
+            overflow: hidden;
+            text-align: center;
+        }
+        .box ul li{
+            float: left;
+            height:60px;
+            line-height: 60px;
+            width:16.666666666666%;
+        }
+        .box ul .ctr{
+            height:20px;
+            line-height: 20px;
+        }
+        .box ul .ctr *{
+            float: left;
+        }
+        .box ul .ctr input:nth-child(2){
+            width:30px;
+            margin: 0px 5px;
+        }
+        .remove{
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <ul>
+            <form class="form-inline">
+                <div class="form-group">
+                    <label >商品名称</label>
+                    <input type="text" class="form-control seller" placeholder="商品名称">
+                </div>
+                <div class="form-group">
+                    <label>单价</label>
+                    <input type="number" class="form-control price" placeholder="单价">
+                </div>
+                <div class="form-group">
+                    <label>数量</label>
+                    <input type="number" value="1" class="form-control num" placeholder="数量">
+                </div>
+                <button type="submit" class="btn btn-success">加入购物车</button>
+            </form>
+        </ul>
+        <br><br>
+        <ul class="title">
+            <li>
+                <input  type="checkbox" id="cartAll" data-off="全选">
+                <span >全选</span>
+            </li>
+            <li>
+                <span>商品信息</span>
+            </li>
+            <li>
+                <span>单价</span>
+            </li>
+            <li>
+                <span>数量</span>
+            </li>
+            <li>
+                <span>金额</span>
+            </li>
+            <li>
+                <span>操作</span>
+            </li>
+        </ul>
+        <div class="content-baba">
+            <!--<ul class="content">
+                <li>
+                    <input type="checkbox">
+                </li>
+                <li>
+                    化装品1
+                </li>
+                <li>
+                    55
+                </li>
+                <li class="ctr">
+                    <div style="margin-left: 39px;margin-top: 9px;">
+                        <input type="button" class="jj" value="&nbsp;+&nbsp;">
+                        <input type="text" value="1">
+                        <input type="button" class="jj" value="&nbsp;-&nbsp;">
+                    </div>
+                </li>
+                <li>
+                    55
+                </li>
+                <li>
+                    <span>删除</span>
+                </li>
+            </ul>-->
+
+        </div>
+        <h1 style="float: right; margin: 20px;" id="allddb">总计：￥112元</h1>
+    </div>
+</body>
+</html>
+
+<script>
+
+    var cart =JSON.parse(localStorage.getItem("gg")) || [];
+    localStorage.setItem("gg",JSON.stringify(cart)) ;
+
+
+
+
+    function addCart(){
+        this.updata=document.querySelector(".form-inline");
+        this.seller=this.updata.querySelector(".seller"); //商品名称
+        this.price=this.updata.querySelector(".price"); //价格
+        this.num=this.updata.querySelector(".num"); // 数量
+        this.updataBtn=this.updata.querySelector(".btn.btn-success"); // 数量
+        this.cartAll=document.querySelector("#cartAll"); //全选
+
+        this.oUl=document.querySelector(".content-baba");
+    };
+
+    addCart.prototype={
+        //初始化
+        init:function(){
+            localStorage.setItem("gg",JSON.stringify(cart));
+
+            cart =JSON.parse(localStorage.getItem("gg"));
+            this.createhmtl();
+        },
+        //加入购物车
+        addSeller:function(){
+            var that=this;
+            this.updataBtn.onclick=function(ev){
+                ev.preventDefault(); //阻止默认事件
+                var obj={};
+
+                obj.name=that.seller.value;
+                obj.price=that.price.value;
+                obj.complate=true;  //是否选 中
+                obj.num=that.num.value;
+
+                console.log(obj)
+                if (!obj.name) return;
+                if (!obj.price) return;
+
+                cart.push(obj);
+
+                //生成html
+                that.init();
+
+                //把value 清空
+                that.seller.value="";
+                that.price.value="";
+                that.num.value="1"
+            }
+        },
+        //绑定html
+        bindhtml:function(obj,index){
+            var str='<ul class="content" data-index="'+index+'">'+
+                    '<li><input type="checkbox" '+ (obj.complate ? "checked" : "") +' class="check"></li>'+
+                    '<li>'+obj.name+'</li>'+
+                    '<li>'+obj.price+'</li>'+
+                    '<li class="ctr">'+
+                    '<div style="margin-left: 39px;margin-top: 9px;">'+
+                    '<input type="button" class="jj reduce" value="&nbsp;-&nbsp;">'+
+                    '<input type="text" value="'+obj.num+'">'+
+                    '<input type="button" class="jj plus" value="&nbsp;+&nbsp;">'+
+                    '</div>'+
+                    '</li>'+
+                    '<li> '+obj.num * obj.price+'</li>'+
+                    '<li><span class="remove">删除</span></li>'+
+                    '</ul>';
+
+            return str;
+        },
+        createhmtl:function(){
+            var str="";
+            var sumZS=0;
+
+            for(var i=0; i<cart.length; i++){
+                str+=this.bindhtml(cart[i],i);
+
+                if (!cart[i].complate) continue; //跳过本次循环
+                sumZS+= cart[i].price * cart[i].num;   //总价
+            }
+            this.oUl.innerHTML=str;
+            //在哪里生成的，就在哪里注册
+            this.remove();
+            this.jiajia();
+            this.allNum(sumZS); //总价
+            this.complate();
+
+            this.quanxuan(); //全选
+            this.ischeck();
+        },
+        //删除
+        remove:function(){
+            this.removeBtn=document.querySelectorAll(".remove"); // 删除
+            var that=this;
+            for(var i=0; i<this.removeBtn.length; i++){
+                this.removeBtn[i].onclick=function () {
+                    //alert(1111);
+                    //先删除 数组 某一个  存进去   取出来    又要重新 刷新文档
+                    var index = this.parentNode.parentNode.getAttribute("data-index");
+
+                    cart.splice(index,1); // 删除谁  删除几个
+
+                    that.init();
+                }
+            }
+
+        },
+        //加加
+        jiajia:function(){
+            this.plus=document.querySelectorAll(".jj.plus");
+            this.reduce=document.querySelectorAll(".jj.reduce");
+            var that=this;
+            for(var i=0; i<this.plus.length; i++){
+                this.plus[i].onclick=function () {
+                    var index=this.parentNode.parentNode.parentNode.getAttribute("data-index");
+                    cart[index].num++;
+                    that.init();
+                };
+
+                //减减
+                this.reduce[i].onclick=function () {
+                    var index=this.parentNode.parentNode.parentNode.getAttribute("data-index");
+                    cart[index].num--;
+                    if(cart[index].num <= 1){
+                        cart[index].num=1;
+                    }
+                    that.init();
+                }
+
+            }
+            // this.num++    是第几个数据在加加
+            //    this.init();
+        },
+        //总价
+        allNum:function(sumZS){
+            this.allddb=document.querySelector("#allddb");
+            allddb.innerHTML="总计：￥"+sumZS+"元"
+        },
+        //单选
+        complate:function(){
+            this.check=document.querySelectorAll(".check");
+            var that=this;
+            console.log(this.check)
+            for(var i=0; i<this.check.length; i++){
+                this.check[i].onclick=function () {
+                    var index=this.parentNode.parentNode.getAttribute("data-index");
+                    cart[index].complate= !cart[index].complate; //取反
+
+                    that.ischeck();
+
+                    that.init();
+                }
+            }
+        },
+        ischeck:function(){
+            var that=this;
+
+            var off=true;
+            for(var i=0; i<cart.length; i++){
+                if (!cart[i].complate){
+                    off=false;
+                }
+            }
+
+            if (cart.length == 0){
+                that.cartAll.checked=false;
+                return;
+            }
+            if(off){
+                that.cartAll.checked=true;
+                that.cartAll.setAttribute("data-off","不选");
+            }
+            else{
+                that.cartAll.checked=false;
+                that.cartAll.setAttribute("data-off","全选");
+            }
+
+        },
+        //全选
+        quanxuan:function(){
+            var that=this;
+            this.cartAll.onclick=function () {
+                var off = this.getAttribute("data-off");
+                if (off == "全选"){
+                    for(var i=0; i<cart.length; i++){
+                        cart[i].complate=true;
+                    }
+                    this.setAttribute("data-off","不选");
+                }
+                else{
+                    for(var i=0; i<cart.length; i++){
+                        cart[i].complate=false;
+                    }
+                    this.setAttribute("data-off","全选");
+                }
+                that.init();
+            }
+        },
+        //绑定事件
+        bindEvent:function () {
+            this.init();
+            this.addSeller();
+            this.createhmtl();
+        },
+    };
+
+    var obj=new addCart();
+    obj.bindEvent();
+    console.log(obj)
+
+        //1.不重复
+        //2.有弹性,扩 性好  好维护
+        //3. 简洁
+
+
+    /*var data=[
+        {name:"化装品1",price:55,number:1,num:55}
+    ];*/
+
+    //1.先获取数据
+    //2.生成html
+
+    //加入购物车
+    //1.保存数据
+    //2.生成html
+</script>

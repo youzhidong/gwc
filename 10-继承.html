@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+
+    <div class="bb"></div>
+    <div class="bb"></div>
+    <div class="bb"></div>
+
+    <script>
+        // 数字  字符串  布尔  对像（数组，function,）  .... Error
+        //String 字符串类型下面有很多方法  substr splice
+        //Array 数组类型下面有很多方法  splice  slice  push  pop  ....
+
+        //我们如何给某个类型 自定义一个方法
+
+        var a=[1,2,3,5,8,9,30];
+        var c=[1,2,3,5,228,9,30];
+        var bbb=[1,2,3,115,8,9,30];
+
+        Array.prototype.sum=function(){
+            var result=0;
+                for(var i=0; i<this.length; i++){
+                    result+= this[i]
+                }
+                return result;
+        }
+
+
+
+
+    </script>
+
+
+</body>
+</html>
